@@ -1,4 +1,8 @@
 flask 
 flask_sqlalchemy
 flask_ngrok
+os
+webbrowser
+werkzeug.utils
+datetime
 gunicorn
