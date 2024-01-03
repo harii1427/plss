@@ -1,0 +1,172 @@
+<!-- indexweb.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha384-pzjw8L4+6UqX5ZpR5eIMIhpK5LVJNcgSv1a9u4rG59gokxqj2Db/6EmfRD2f1x" crossorigin="anonymous">
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    form {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        width: 80%;
+        max-width: 400px;
+    }
+
+    h1, h2 {
+        color: #343a40;
+        text-align: center;
+    }
+
+    label {
+        display: block;
+        margin: 10px 0;
+        color: #495057;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+
+    button {
+        background-color: #28a745;
+        color: #ffffff;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    button:hover {
+        background-color: #218838;
+    }
+
+    div {
+        margin-top: 20px;
+        width: 80%;
+        max-width: 600px;
+        background-color: #ffffff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative; /* Added relative positioning */
+    }
+
+    img, video {
+        width: 100%;
+        border-radius: 4px;
+    }
+
+    p {
+        color: #495057;
+        margin-top: 10px;
+    }
+
+    form[style="display: inline;"] {
+        margin-left: 10px;
+        /* position: absolute; Removed absolute positioning */
+        /* bottom: 10px; Removed bottom positioning */
+    }
+    
+    /* Additional styles for inline form */
+    form[style="display: inline;"] button {
+        width: auto; /* Adjust width for inline button */
+        margin-left: 5px; /* Add a margin between buttons */
+    }
+</style>
+
+
+
+    <title>Your Web App</title>
+</head>
+<body>
+    {% if user %}
+        <h1>Welcome, {{ user.username }}!</h1>
+
+        <form method="POST" action="{{ url_for('upload_post') }}" enctype="multipart/form-data">
+            <label for="post_type">Select post type:</label>
+            <select name="post_type" id="post_type">
+                <option value="photo">Photo</option>
+                <option value="video">Video</option>
+            </select>
+
+            <label for="content">Upload:</label>
+            <input type="file" name="content" accept="image/*, video/*" required>
+
+            <button type="submit">Upload</button>
+        </form>
+
+        {% for post in posts %}
+            <div>
+                {% if post.type == 'photo' %}
+                    <img src="{{ url_for('static', filename='photos/' + post.content) }}" alt="Photo">
+                {% elif post.type == 'video' %}
+                    <video width="320" height="240" controls>
+                        <source src="{{ url_for('static', filename='videos/' + post.content) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                {% endif %}
+                <p>Likes: {{ post.likes }}</p>
+                <form method="POST" action="{{ url_for('like', post_id=post.id) }}" style="display: inline;">
+                    <button type="submit">Like</button>
+                </form>
+                <form method="POST" action="{{ url_for('unlike', post_id=post.id) }}" style="display: inline;">
+                    <button type="submit">Unlike</button>
+                </form>
+                <form method="POST" action="{{ url_for('share', post_id=post.id) }}" style="display: inline;">
+                    <button type="submit">Share</button>
+                </form>
+            </div>
+        {% endfor %}
+
+    {% else %}
+        <h1>Welcome to corizos</h1>
+
+        <form method="post" action="{{ url_for('login') }}">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <h2>New user registration</h2>
+
+        <form method="post" action="{{ url_for('register') }}">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Register</button>
+        </form>
+
+    {% endif %}
+
+</body>
+</html<!-- indexweb.html -->
